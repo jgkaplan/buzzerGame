@@ -1,0 +1,22 @@
+{
+  "name": "buzzer",
+  "description": "A buzzer game",
+  "main": "index.js",
+  "authors": [
+    "jgkaplan"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.2.3"
+  }
+}

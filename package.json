@@ -1,0 +1,13 @@
+{
+  "name": "buzzer",
+  "version": "1.0.0",
+  "description": "A buzzer game",
+  "main": "index.js",
+  "scripts": {},
+  "author": "jgkaplan",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.4",
+    "socket.io": "^1.4.5"
+  }
+}
