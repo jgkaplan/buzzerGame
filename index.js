@@ -15,7 +15,7 @@ app.get('/player', function(req, res){
     res.sendFile(__dirname+'/player.html');
 })
 
-app.use(express.static(path.join(__dirname,"/public")));
+app.use('/css', express.static(path.join(__dirname,"/css")));
 app.use('/bower_components', express.static(path.join(__dirname,"/bower_components")));
 app.use('/node_modules/socket.io-client', express.static(path.join(__dirname,'/node_modules','/socket.io-client')))
 

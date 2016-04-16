@@ -1,0 +1,60 @@
+html, body {
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.active {
+    background-color: yellow;
+}
+.success {
+    background-color: green;
+}
+.failure {
+    background-color: red;
+}
+#content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    text-align: center;
+}
+#playerNameInput {
+    outline: none;
+    padding: 3px;
+    text-align: center;
+    font-family: inherit;
+    margin: 10px auto;
+    display: block;
+}
+#playerName h1 {
+    margin: 0;
+}
+#playerName input[type=submit] {
+    border: none;
+    background: lightgray;
+    padding: 6px 10px 7px;
+    outline: none;
+    cursor: pointer;
+}
+#playerName input[type=submit]:active {
+    background-color: gray;
+}
+#answer {
+    background: slateblue;
+    border: none;
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    outline: none;
+    cursor: pointer;
+}
+#answer:active {
+    background: darkslateblue;
+}

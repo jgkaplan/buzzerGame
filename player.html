@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
     <title>Player | Buzzer</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link rel='stylesheet' href='css/player.css' />
     <script src='bower_components/jquery/dist/jquery.min.js'></script>
     <script src='node_modules/socket.io-client/socket.io.js'></script>
     <script>
@@ -10,7 +13,7 @@
         $(document).ready(function(){
             $('#playerName').on('submit', function(e){
                 e.preventDefault();
-                socket.emit('playerJoin', $('#playerNameInput').val());
+                socket.emit('playerJoin', $('#playerNameInput').val()!=''?$('#playerNameInput').val():'Anonymous');
                 $('#playerName').remove();
                 $('#content').append('<button id="answer">Answer</button>');
                 return false;
@@ -33,22 +36,12 @@
             });
         });
     </script>
-    <style>
-        .active{
-            background-color:yellow;
-        }
-        .success{
-            background-color:green;
-        }
-        .failure{
-            background-color:red;
-        }
-    </style>
 </head>
 <body>
     <div id='content'>
         <form id='playerName'>
-            Enter name: <input id='playerNameInput' placeholder='anon' />
+            <h1>Choose a name</h1>
+            <input id='playerNameInput' placeholder='Anonymous' />
             <input type='submit' value='submit' />
         </form>
     </div>

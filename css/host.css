@@ -1,0 +1,12 @@
+#buttons, #continueButton {
+    display: none;
+}
+.active {
+    background-color: yellow;
+}
+.success {
+    background-color: green;
+}
+.failure {
+    background-color: red;
+}
