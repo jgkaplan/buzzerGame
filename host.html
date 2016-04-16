@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Host | Buzzer</title>
+    <script src='bower_components/jquery/dist/jquery.min.js'></script>
+    <script src='node_modules/socket.io-client/socket.io.js'></script>
+    <script>
+        var socket = io('/host');
+        var guessingPlayer;
+
+        $(document).ready(function(){
+            $('body').on('click', '.responseButton', function(){
+                $("#buttons").hide();
+                $("#continueButton").show();
+                $('.active').removeClass('active')
+                if($(this).attr('id')=='correct'){
+                    socket.emit('success');
+                    $(document.getElementById(guessingPlayer)).addClass('success');
+                }else{
+                    socket.emit('failure');
+                    $(document.getElementById(guessingPlayer)).addClass('failure');
+                }
+                guessingPlayer = '';
+            });
+            $('body').on('click', '#continueButton', function(){
+                $("#continueButton").hide();
+                $('#playerList li').removeClass('success').removeClass('failure');
+                socket.emit('continue');
+            });
+            socket.on('playerJoin', function(id, name){
+                $('#playerList').append('<li id='+id+'>'+name+'</li>');
+            });
+
+            socket.on('playerLeave', function(id){
+                $(document.getElementById(id)).remove();
+            });
+
+            socket.on('playerGuess', function(id){
+                $(document.getElementById(id)).addClass('active');
+                $('#buttons').show();
+                guessingPlayer = id;
+            });
+        });
+    </script>
+    <style>
+        #buttons, #continueButton{
+            display:none;
+        }
+        .active{
+            background-color:yellow;
+        }
+        .success{
+            background-color:green;
+        }
+        .failure{
+            background-color:red;
+        }
+    </style>
+</head>
+<body>
+
+    <div id='content'>
+        <div id="buttons">
+            <button id="correct" class='responseButton'>Correct</button>
+            <button id="incorrect" class='responseButton'>Incorrect</button>
+        </div>
+        <button id='continueButton'>Continue</button>
+        <ul id='playerList'></ul>
+    </div>
+</body>
+</html>
