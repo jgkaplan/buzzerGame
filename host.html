@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Host | Buzzer</title>
@@ -9,45 +10,55 @@
     <script>
         var socket = io('/host');
         var guessingPlayer;
+        var ready = true;
 
-        $(document).ready(function(){
-            $('body').on('click', '.responseButton', function(){
+        $(document).ready(function() {
+            $('body').on('click', '.responseButton', function() {
                 $("#buttons").hide();
                 $("#continueButton").show();
                 $('.active').removeClass('active')
-                if($(this).attr('id')=='correct'){
-                    socket.emit('success');
+                if ($(this).attr('id') == 'correct') {
+                    socket.emit('success', guessingPlayer);
                     $(document.getElementById(guessingPlayer)).addClass('success');
-                }else{
-                    socket.emit('failure');
+                } else {
+                    socket.emit('failure', guessingPlayer);
                     $(document.getElementById(guessingPlayer)).addClass('failure');
                 }
                 guessingPlayer = '';
             });
-            $('body').on('click', '#continueButton', function(){
+            $('body').on('click', '#continueButton', function() {
                 $("#continueButton").hide();
                 $('#playerList li').removeClass('success').removeClass('failure');
+                ready = true;
                 socket.emit('continue');
             });
-            socket.on('playerJoin', function(id, name){
-                $('#playerList').append('<li id='+id+'>'+name+'</li>');
+            socket.on('playerJoin', function(id, name) {
+                $('#playerList').append('<li id=' + id + '>' + name + '</li>');
             });
 
-            socket.on('playerLeave', function(id){
+            socket.on('playerLeave', function(id) {
                 $(document.getElementById(id)).remove();
             });
 
-            socket.on('playerGuess', function(id){
-                $(document.getElementById(id)).addClass('active');
-                $('#buttons').show();
-                guessingPlayer = id;
+            socket.on('playerGuess', function(id) {
+                if(ready){
+                    $(document.getElementById(id)).addClass('active');
+                    $('#buttons').show();
+                    guessingPlayer = id;
+                    socket.emit('acceptedGuess', id);
+                    ready = false;
+                }
+            });
+            socket.on('roomID', function(room) {
+                $('#room').text(room);
             });
         });
     </script>
 </head>
-<body>
 
+<body>
     <div id='content'>
+        <span id='room'></span>
         <div id="buttons">
             <button id="correct" class='responseButton'>Correct</button>
             <button id="incorrect" class='responseButton'>Incorrect</button>
@@ -56,4 +67,5 @@
         <ul id='playerList'></ul>
     </div>
 </body>
+
 </html>

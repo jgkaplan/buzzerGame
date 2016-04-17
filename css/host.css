@@ -10,3 +10,8 @@
 .failure {
     background-color: red;
 }
+#room {
+    position: absolute;
+    top: 0;
+    right: 0;
+}

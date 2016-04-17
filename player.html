@@ -13,17 +13,13 @@
         $(document).ready(function(){
             $('#playerName').on('submit', function(e){
                 e.preventDefault();
-                socket.emit('playerJoin', $('#playerNameInput').val()!=''?$('#playerNameInput').val():'Anonymous');
+                socket.emit('playerJoin', $('#playerNameInput').val()!=''?$('#playerNameInput').val():'Anonymous', $('#roomInput').val());
                 $('#playerName').remove();
                 $('#content').append('<button id="answer">Answer</button>');
                 return false;
             });
             $('body').on('click', '#answer', function(){
-                socket.emit('answer', function(guessed){
-                    if(guessed){
-                        $('body').addClass('active');
-                    }
-                });
+                socket.emit('answer');
             });
             socket.on('success', function(){
                 $('body').removeClass('active').addClass('success');
@@ -34,6 +30,9 @@
             socket.on('continue', function(){
                 $('body').removeClass('success').removeClass('failure').removeClass('active');
             });
+            socket.on('guessAccepted', function(){
+                $('body').addClass('active');
+            })
         });
     </script>
 </head>
@@ -42,6 +41,8 @@
         <form id='playerName'>
             <h1>Choose a name</h1>
             <input id='playerNameInput' placeholder='Anonymous' />
+            <h1>Join a room</h1>
+            <input id='roomInput' required />
             <input type='submit' value='submit' />
         </form>
     </div>

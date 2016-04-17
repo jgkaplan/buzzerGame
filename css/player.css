@@ -25,7 +25,7 @@ html, body {
     transform-style: preserve-3d;
     text-align: center;
 }
-#playerNameInput {
+#playerNameInput, #roomInput {
     outline: none;
     padding: 3px;
     text-align: center;
