@@ -38,6 +38,11 @@
 
             socket.on('playerLeave', function(id) {
                 $(document.getElementById(id)).remove();
+                if(id == guessingPlayer){
+                    $("#buttons").hide();
+                    $("#continueButton").hide();
+                    ready = true;
+                }
             });
 
             socket.on('playerGuess', function(id) {
