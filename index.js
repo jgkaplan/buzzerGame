@@ -13,8 +13,8 @@ app.get('/host', function(req, res) {
 
 app.get('/player', function(req, res) {
     res.sendFile(__dirname + '/player.html');
-})
-
+});
+app.use('/modernizr-custom.js', express.static(path.join(__dirname, "/modernizr-custom.js")));
 app.use('/css', express.static(path.join(__dirname, "/css")));
 app.use('/bower_components', express.static(path.join(__dirname, "/bower_components")));
 app.use('/node_modules/socket.io-client', express.static(path.join(__dirname, '/node_modules', '/socket.io-client')));
@@ -27,7 +27,6 @@ var rooms = [];
 
 player.on('connection', function(socket) {
     var roomID;
-    //var hostID;
     socket.on('playerJoin', function(name, room) {
         host.to(room).emit('playerJoin', socket.id, name);
         socket.join(room);
@@ -59,14 +58,17 @@ host.on('connection', function(socket) {
         rooms.pop(rooms.indexOf(joinID));
         // player.to(joinID).leave(joinID);
     });
-    socket.on('acceptedGuess', function(currentlyGuessing){
+    socket.on('acceptedGuess', function(currentlyGuessing) {
         player.to(currentlyGuessing).emit('guessAccepted');
+    });
+    socket.on('setButton', function(button){
+        player.to(joinID).emit('setButton', button);
     })
 });
 
-function genRoomID(){
+function genRoomID() {
     var id = '';
-    while(id == '' || rooms.indexOf(id) != -1 || id.length != 5){
+    while (id == '' || rooms.indexOf(id) != -1 || id.length != 5) {
         id = Math.random().toString(36).replace(/^0/g, '').replace(/[^a-zA-Z0-9]/g, '').substr(0, 5).toUpperCase();
     }
     rooms.push(id);

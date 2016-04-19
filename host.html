@@ -3,16 +3,43 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
     <title>Host | Buzzer</title>
     <link rel='stylesheet' href='css/host.css' />
     <script src='bower_components/jquery/dist/jquery.min.js'></script>
     <script src='node_modules/socket.io-client/socket.io.js'></script>
+    <script src='modernizr-custom.js'></script>
     <script>
         var socket = io('/host');
         var guessingPlayer;
         var ready = true;
+        var chosenButton;
 
         $(document).ready(function() {
+            if(!Modernizr.inputtypes.color){
+                $('#colorChooser, label[for="colorChooser"]').hide();
+            }
+            $('body').on('submit', '#settings', function(e){
+                e.preventDefault();
+                chosenButton = {
+                    class: $('input[name="type"]:checked + label > .choice > div').attr('class').split(' ')[0],
+                    color: $('#colorChooser').val()
+                };
+                $('#settings').fadeOut().promise().then(function(){
+                    $('#room').fadeIn();
+                    setTimeout(function(){
+                        $('#room').css({
+                            'font-size': '1em',
+                            'top': '0', //20
+                            'right': '0', //50
+                            'transform': 'translate(0,0)'
+                        });
+                    }, 5000);
+                }).then(function(){
+                    $('#playerList').show();
+                });
+                return false;
+            });
             $('body').on('click', '.responseButton', function() {
                 $("#buttons").hide();
                 $("#continueButton").show();
@@ -32,13 +59,17 @@
                 ready = true;
                 socket.emit('continue');
             });
+            $('#colorChooser').on('change', function(){
+                $('.dot, .square').css('background-color', $(this).val());
+            });
             socket.on('playerJoin', function(id, name) {
                 $('#playerList').append('<li id=' + id + '>' + name + '</li>');
+                socket.emit('setButton', chosenButton);
             });
 
             socket.on('playerLeave', function(id) {
                 $(document.getElementById(id)).remove();
-                if(id == guessingPlayer){
+                if (id == guessingPlayer) {
                     $("#buttons").hide();
                     $("#continueButton").hide();
                     ready = true;
@@ -46,7 +77,7 @@
             });
 
             socket.on('playerGuess', function(id) {
-                if(ready){
+                if (ready) {
                     $(document.getElementById(id)).addClass('active');
                     $('#buttons').show();
                     guessingPlayer = id;
@@ -58,12 +89,44 @@
                 $('#room').text(room);
             });
         });
+        //give host ability to customize buttons and sound
+        //scoring
+        //body background semitransparent when room number is over it
+        //clicking room in corner puts it large in the center
+        //    with the body background semitransparent
+        //Allow more people to answer after a wrong answer,
+        //    but not the person who answered incorrectly
     </script>
 </head>
 
 <body>
-    <div id='content'>
+    <div class='content'>
         <span id='room'></span>
+        <form id='settings' class='center' target="_blank">
+            <fieldset>
+                <legend>Button Type:</legend>
+                <input type='radio' name='type' id='dot'/>
+                <label for='dot'><div class='choice'>
+                    <div class='dot center'></div>
+                </div>Circle</label>
+                <input type='radio' name='type' id='square'/>
+                <label for='square'><div class='choice'>
+                    <div class='square center'></div>
+                </div>Square</label>
+                <input type='radio' name='type' id='bell'/>
+                <label for='bell'><div class='choice'>
+                    <div class='bell center'></div>
+                </div>Bell</label>
+                <input type='radio' name='type' id='full'/>
+                <label for='full'><div class='choice'>
+                    <div class='screen'></div>
+                </div>Screen</label>
+                <br />
+                <label class='checkInput' for='colorChooser'>Choose Color:</label>
+                <input class='checkInput' type='color' value='#7F007F' name='colorChooser' id='colorChooser'/>
+            </fieldset>
+            <input type='submit' value='Create Room' />
+        </form>
         <div id="buttons">
             <button id="correct" class='responseButton'>Correct</button>
             <button id="incorrect" class='responseButton'>Incorrect</button>

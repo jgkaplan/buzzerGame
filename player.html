@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
@@ -10,41 +11,45 @@
     <script src='node_modules/socket.io-client/socket.io.js'></script>
     <script>
         var socket = io('/player');
-        $(document).ready(function(){
-            $('#playerName').on('submit', function(e){
+        $(document).ready(function() {
+            $('#playerName').on('submit', function(e) {
                 e.preventDefault();
-                socket.emit('playerJoin', $('#playerNameInput').val()!=''?$('#playerNameInput').val():'Anonymous', $('#roomInput').val());
+                socket.emit('playerJoin', $('#playerNameInput').val() != '' ? $('#playerNameInput').val() : 'Anonymous', $('#roomInput').val().toUpperCase());
                 $('#playerName').remove();
-                $('#content').append('<button id="answer">Answer</button>');
+                $('body').append('<div class="btn center"><button id="answer">Answer</button></div>');
                 return false;
             });
-            $('body').on('click', '#answer', function(){
+            $('body').on('click', '#answer', function() {
                 socket.emit('answer');
             });
-            socket.on('success', function(){
+            socket.on('success', function() {
                 $('body').removeClass('active').addClass('success');
             });
-            socket.on('failure', function(){
+            socket.on('failure', function() {
                 $('body').removeClass('active').addClass('failure');
             });
-            socket.on('continue', function(){
+            socket.on('continue', function() {
                 $('body').removeClass('success').removeClass('failure').removeClass('active');
             });
-            socket.on('guessAccepted', function(){
+            socket.on('guessAccepted', function() {
                 $('body').addClass('active');
-            })
+            });
+            socket.on('setButton', function(button){
+                $('#answer').css('background-color', button.color).addClass(button.class);
+                if($('#answer').hasClass("screen")) $('.btn').removeClass('center');
+            });
         });
     </script>
 </head>
+
 <body>
-    <div id='content'>
-        <form id='playerName'>
-            <h1>Choose a name</h1>
-            <input id='playerNameInput' placeholder='Anonymous' />
-            <h1>Join a room</h1>
-            <input id='roomInput' required />
-            <input type='submit' value='submit' />
-        </form>
-    </div>
+    <form id='playerName' class='center'>
+        <h1>Choose a name</h1>
+        <input id='playerNameInput' placeholder='Anonymous' />
+        <h1>Join a room</h1>
+        <input id='roomInput' required />
+        <input type='submit' value='submit' />
+    </form>
 </body>
+
 </html>
