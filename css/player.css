@@ -92,6 +92,9 @@ html, body {
     left: 0;
     z-index: 100;
 }
+#buttonContainer {
+    display: none;
+}
 
 /*#answer:active {
     background: darkslateblue;

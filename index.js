@@ -31,7 +31,6 @@ player.on('connection', function(socket) {
         host.to(room).emit('playerJoin', socket.id, name);
         socket.join(room);
         roomID = room;
-        //hostID = Object.keys(host.to(room).sockets)[0];
     });
     socket.on('disconnect', function() {
         host.to(roomID).emit('playerLeave', socket.id);
@@ -56,7 +55,7 @@ host.on('connection', function(socket) {
     });
     socket.on('disconnect', function() {
         rooms.pop(rooms.indexOf(joinID));
-        // player.to(joinID).leave(joinID);
+        player.to(joinID).emit('exit');
     });
     socket.on('acceptedGuess', function(currentlyGuessing) {
         player.to(currentlyGuessing).emit('guessAccepted');

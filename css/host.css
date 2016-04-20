@@ -16,7 +16,7 @@ html, body {
     transform-style: preserve-3d;
     text-align: center;
 }
-#buttons, #continueButton {
+#buttons, #continueButton, #guessAgainButton {
     display: none;
 }
 .active {

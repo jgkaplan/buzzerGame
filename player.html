@@ -16,7 +16,6 @@
                 e.preventDefault();
                 socket.emit('playerJoin', $('#playerNameInput').val() != '' ? $('#playerNameInput').val() : 'Anonymous', $('#roomInput').val().toUpperCase());
                 $('#playerName').remove();
-                $('body').append('<div class="btn center"><button id="answer">Answer</button></div>');
                 return false;
             });
             $('body').on('click', '#answer', function() {
@@ -37,6 +36,10 @@
             socket.on('setButton', function(button){
                 $('#answer').css('background-color', button.color).addClass(button.class);
                 if($('#answer').hasClass("screen")) $('.btn').removeClass('center');
+                $('#buttonContainer').show();
+            });
+            socket.on('exit', function(){
+                location.reload();
             });
         });
     </script>
@@ -50,6 +53,7 @@
         <input id='roomInput' required />
         <input type='submit' value='submit' />
     </form>
+    <div id='buttonContainer' class="btn center"><button id="answer">Answer</button></div>
 </body>
 
 </html>
