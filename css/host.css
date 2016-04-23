@@ -16,7 +16,7 @@ html, body {
     transform-style: preserve-3d;
     text-align: center;
 }
-#buttons, #continueButton, #guessAgainButton {
+#buttons, #continueButton, #guessAgainButton, #startButton, #playerList{
     display: none;
 }
 .active {
@@ -28,7 +28,7 @@ html, body {
 .failure {
     background-color: red;
 }
-#room {
+#roomContainer {
     position: absolute;
     display: none;
     font-size: 4em;
@@ -41,6 +41,11 @@ html, body {
     text-align: center;
     -webkit-transition: font-size 1s, top 1s, right 1s, -webkit-transform 1s;
     transition: font-size 1s, top 1s, right 1s, transform 1s;
+}
+
+#room {
+    margin: 0 auto;
+    display:block;
 }
 .choice {
     width: 50px;

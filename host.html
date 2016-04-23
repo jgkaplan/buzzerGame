@@ -12,7 +12,7 @@
     <script>
         var socket = io('/host');
         var guessingPlayer;
-        var ready = true;
+        var ready = false;
         var chosenButton;
         var wrongPlayers = [];
 
@@ -27,37 +27,42 @@
                     color: $('#colorChooser').val()
                 };
                 $('#settings').fadeOut().promise().then(function(){
-                    $('#room').fadeIn();
-                    setTimeout(function(){
-                        $('#room').css({
-                            'font-size': '1em',
-                            'top': '0', //20
-                            'right': '0', //50
-                            'transform': 'translate(0,0)'
-                        });
-                    }, 5000);
+                    $('#roomContainer, #startButton').fadeIn();
                 }).then(function(){
                     $('#playerList').show();
                 });
                 return false;
             });
+            $('body').on('click', '#startButton', function(){
+                $('#roomContainer').css({
+                    'font-size': '1em',
+                    'top': '0', //20
+                    'right': '0', //50
+                    'transform': 'translate(0,0)'
+                });
+                $('#startButton').css('visibility','hidden');
+                ready = true;
+            });
             $('body').on('click', '.responseButton', function() {
                 $("#buttons").hide();
                 $("#continueButton").show();
                 $('.active').removeClass('active')
+                var p = $(document.getElementById(guessingPlayer));
                 if ($(this).attr('id') == 'correct') {
                     socket.emit('success', guessingPlayer);
-                    $(document.getElementById(guessingPlayer)).addClass('success');
+                    p.addClass('success');
+                    p.children('.cScore').text(parseInt(p.children('.cScore').text())+1);
                 } else {
                     socket.emit('failure', guessingPlayer);
-                    $(document.getElementById(guessingPlayer)).addClass('failure');
-                    if($('.failure').length < $('#playerList li').length) $('#guessAgainButton').show();
+                    p.addClass('failure');
+                    p.children('.iScore').text(parseInt(p.children('.iScore').text())+1);
+                    if($('.failure').length < $('#playerList .player').length) $('#guessAgainButton').show();
                 }
             });
             $('body').on('click', '#continueButton', function() {
                 $("#continueButton").hide();
                 $("#guessAgainButton").hide();
-                $('#playerList li').removeClass('success').removeClass('failure');
+                $('#playerList .player').removeClass('success').removeClass('failure');
                 ready = true;
                 wrongPlayers = [];
                 guessingPlayer = '';
@@ -74,7 +79,7 @@
                 $('.dot, .square').css('background-color', $(this).val());
             });
             socket.on('playerJoin', function(id, name) {
-                $('#playerList').append('<li id=' + id + '>' + name + '</li>');
+                $('#playerList').append('<tr class="player" id='+id+'><td>'+name+'</td><td class="cScore">0</td><td class="iScore">0</td></tr>')
                 socket.emit('setButton', chosenButton);
             });
 
@@ -101,18 +106,18 @@
             });
         });
         //give host ability to customize buttons and sound
-        //scoring
         //body background semitransparent when room number is over it
         //clicking room in corner puts it large in the center
         //    with the body background semitransparent
-        //Allow more people to answer after a wrong answer,
-        //    but not the person who answered incorrectly
     </script>
 </head>
 
 <body>
     <div class='content'>
-        <span id='room'></span>
+        <div id='roomContainer'>
+            <span id='room'></span>
+            <button id='startButton'>Start Game</button>
+        </div>
         <form id='settings' class='center' target="_blank">
             <fieldset>
                 <legend>Button Type:</legend>
@@ -144,7 +149,13 @@
         </div>
         <button id='continueButton'>Continue</button>
         <button id='guessAgainButton'>Allow More Guesses</button>
-        <ul id='playerList'></ul>
+        <table id='playerList'>
+            <tr>
+                <th>Name</th>
+                <th>Correct</th>
+                <th>Incorrect</th>
+            </tr>
+        </table>
     </div>
 </body>
 
